@@ -12,7 +12,7 @@ configure do
   set :sessions, :domain => 'orasi.com'
 end
 
-get '/' do
+get '/movies' do
   unless params[:search].nil?
     headers "Access-Control-Allow-Origin" => "*",
     "Content-Type" => "application/javascript"
