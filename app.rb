@@ -14,6 +14,7 @@ end
 
 get '/' do
   unless params[:search].nil?
+    headers "Access-Control-Allow-Origin" => "*"
     @movie = Movie.find_by(title: params[:search].split(" ").collect {|w| w.capitalize}.join(" "))
     unless @movie.nil?
       params[:callback].nil? ? (jbuilder :index) : "#{params[:callback]}(#{jbuilder :index});"
