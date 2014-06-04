@@ -6,7 +6,10 @@ require ::File.expand_path('../models/movie',__FILE__)
 
 #config
 configure do
+  enable :sessions
+  
   set :haml, layout_options: {views: 'views/layouts'}
+  set :sessions, :domain => 'orasi.com'
 end
 
 get '/' do
