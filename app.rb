@@ -29,10 +29,9 @@ get '/movies' do
 end
 
 get '/actors' do
-  headers "Access-Control-Allow-Origin" => "*",
-  "Content-Type" => "application/javascript"
-
   unless params[:random].nil?
+    headers "Access-Control-Allow-Origin" => "*",
+    "Content-Type" => "application/javascript"
     unless params[:bacon].nil? or params[:bacon]=="true"
       actor = Actor.where.not(name: "Kevin Bacon").find(rand(Actor.count))
     else
@@ -42,6 +41,8 @@ get '/actors' do
   end
 
   unless params[:search].nil?
+    headers "Access-Control-Allow-Origin" => "*",
+    "Content-Type" => "application/javascript"
     @actor = Actor.find_by("lower(name) == ?", params[:search].downcase) if @actor.nil?
     unless @actor.nil?
       params[:callback].nil? ? (@actor.to_json) : "#{params[:callback]}(#{@actor.to_json});"
