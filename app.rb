@@ -21,7 +21,7 @@ get '/movies' do
     unless @movie.nil?
       params[:callback].nil? ? (@movie.to_json) : "#{params[:callback]}(#{@movie.to_json});"
     else
-      jbuilder :error
+      params[:callback].nil? ? (jbuilder :error) : "#{params[:callback]}(#{jbuilder :error});"
     end
   else
     haml :movies, :layout => :main
@@ -46,7 +46,7 @@ get '/actors' do
     unless @actor.nil?
       params[:callback].nil? ? (@actor.to_json) : "#{params[:callback]}(#{@actor.to_json});"
     else
-      jbuilder :error
+      params[:callback].nil? ? (jbuilder :error) : "#{params[:callback]}(#{jbuilder :error});"
     end
   else
     haml :actors, :layout => :main
