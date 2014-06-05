@@ -29,10 +29,19 @@ get '/movies' do
 end
 
 get '/actors' do
+  unless params[:random].nil?
+    unless params[:bacon].nil? or params[:bacon]=="true"
+      actor = Actor.where.not(name: "Kevin Bacon").find(rand(Actor.count))
+    else
+      actor = Actor.find(rand(Actor.count))
+    end
+    return params[:callback].nil? ? (actor.to_json) : "#{params[:callback]}(#{actor.to_json});"
+  end
+
   unless params[:search].nil?
     headers "Access-Control-Allow-Origin" => "*",
     "Content-Type" => "application/javascript"
-    @actor = Actor.find_by("lower(name) == ?", params[:search].downcase)
+    @actor = Actor.find_by("lower(name) == ?", params[:search].downcase) if @actor.nil?
     unless @actor.nil?
       params[:callback].nil? ? (@actor.to_json) : "#{params[:callback]}(#{@actor.to_json});"
     else
@@ -41,13 +50,4 @@ get '/actors' do
   else
     haml :actors, :layout => :main
   end
-end
-
-get '/actors/random' do
-  unless params[:bacon].nil? or params[:bacon]=="true"
-    actor = Actor.where.not(name: "Kevin Bacon").find(rand(Actor.count)).name
-  else
-    actor = Actor.find(rand(Actor.count)).name
-  end
-  redirect to("/actors?search=#{URI::encode actor}")
 end
