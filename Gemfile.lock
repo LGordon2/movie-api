@@ -46,7 +46,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
-  activesupport
   haml
   sinatra
   sqlite3

@@ -1,8 +1,9 @@
 # app.rb
 require ::File.expand_path('../config/application',__FILE__)
-
+require 'open-uri'
 Bundler.require(:default)
-require ::File.expand_path('../models/movie',__FILE__)
+
+Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
 
 #config
 configure do
@@ -16,11 +17,37 @@ get '/movies' do
   unless params[:search].nil?
     headers "Access-Control-Allow-Origin" => "*",
     "Content-Type" => "application/javascript"
-    @movie = Movie.find_by(title: params[:search].titleize)
+    @movie = Movie.find_by("lower(title) == ?", params[:search].downcase)
     unless @movie.nil?
-      params[:callback].nil? ? (jbuilder :index) : "#{params[:callback]}(#{jbuilder :index});"
+      params[:callback].nil? ? (@movie.to_json) : "#{params[:callback]}(#{@movie.to_json});"
+    else
+      jbuilder :error
     end
   else
-    haml :index, :layout => :main
+    haml :movies, :layout => :main
   end
+end
+
+get '/actors' do
+  unless params[:search].nil?
+    headers "Access-Control-Allow-Origin" => "*",
+    "Content-Type" => "application/javascript"
+    @actor = Actor.find_by("lower(name) == ?", params[:search].downcase)
+    unless @actor.nil?
+      params[:callback].nil? ? (@actor.to_json) : "#{params[:callback]}(#{@actor.to_json});"
+    else
+      jbuilder :error
+    end
+  else
+    haml :actors, :layout => :main
+  end
+end
+
+get '/actors/random' do
+  unless params[:bacon].nil? or params[:bacon]=="true"
+    actor = Actor.where.not(name: "Kevin Bacon").find(rand(Actor.count)).name
+  else
+    actor = Actor.find(rand(Actor.count)).name
+  end
+  redirect to("/actors?search=#{URI::encode actor}")
 end

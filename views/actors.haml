@@ -1,0 +1,7 @@
+.container
+  %h1#title Orasi Movie API
+  %h2 All actors
+  %ul
+    - Actor.order(name: :asc).each do |actor|
+      %li
+        = actor.name

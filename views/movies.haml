@@ -1,0 +1,7 @@
+.container
+  %h1#title Orasi Movie API
+  %h2 All movies
+  %ul
+    - Movie.order(title: :asc).each do |movie|
+      %li
+        = movie.title
