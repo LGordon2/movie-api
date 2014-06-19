@@ -13,7 +13,7 @@ configure do
   set :sessions, :domain => 'orasi.com'
 end
 
-get '/movies' do
+get '/movies.?:format?' do
   unless params[:search].nil?
     headers "Access-Control-Allow-Origin" => "*",
     "Content-Type" => "application/javascript"
@@ -24,7 +24,12 @@ get '/movies' do
       params[:callback].nil? ? (jbuilder :error) : "#{params[:callback]}(#{jbuilder :error});"
     end
   else
-    haml :movies, :layout => :main
+    case params[:format]
+      when 'json'
+        Movie.all.collect {|m| m.title}.to_json
+      else
+        haml :movies, :layout => :main
+    end
   end
 end
 
