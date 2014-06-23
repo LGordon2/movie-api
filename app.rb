@@ -26,6 +26,8 @@ get '/movies.?:format?' do
   else
     case params[:format]
       when 'json'
+        headers "Access-Control-Allow-Origin" => "*",
+                "Content-Type" => "application/javascript"
         Movie.all.collect {|m| m.title}.to_json
       else
         haml :movies, :layout => :main
