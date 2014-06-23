@@ -4,4 +4,4 @@
   %ul
     - Movie.order(title: :asc).each do |movie|
       %li
-        = movie.title
+        %a{href: "movies?search=#{movie.title}"}= movie.title
